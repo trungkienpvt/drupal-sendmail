@@ -1,0 +1,42 @@
+//set param to send mail
+$body = theme('forget_password_template', array('user_data'=>$user_data, 'new_pass'=>$random_str));
+$subject = 'Request forget password';
+$from = variable_get('site_mail', '');
+$module = 'service_user';
+$key = 'message_key';
+$language = language_default();
+$params = array(
+'message'=>'',
+'body'=>$body,
+'html'=>true,
+'subject'=>$subject,
+
+);
+$send = true;
+$to = $email;
+//send mail
+$messages = drupal_mail($module, $key, $to, $language, $params, $from, $send);
+if($messages['send']){//semd mail success
+//todo
+}
+
+
+//implementation hook  mail_alter
+
+function service_user_mail_alter(&$message) {
+
+    if(isset($message['params']['body'])){
+        $message['body'] = $message['params']['body'];
+
+    }
+    if(isset($message['params']['subject'])){
+        $message['subject'] = $message['params']['subject'];
+
+    }
+    if(isset($message['params']['html']) && $message['params']['html']== true){
+        $message['headers']['Content-Type'] = 'text/html; charset=UTF-8; format=flowed';
+
+    }
+
+}
+
